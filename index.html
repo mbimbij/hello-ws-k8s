@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Hello you!</h2>
+
+<form>
+  <label for="name">your name:</label>
+  <input type="text" id="name" name="name" value="you"><br>
+  
+  <label for="lang">language:</label>
+  <select id="lang">
+	  <option value="fr">fr</option>
+	  <option value="de">de</option>
+	  <option value="es">es</option>
+	  <option value="en">en</option>
+  </select>
+  
+  <br>
+  <button type="button" onclick="send()">send</button>
+  <div id="response"/>
+</form> 
+
+<script>
+function send() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("response").innerHTML = this.responseText;
+    }
+  };
+  
+  xhttp.open("POST", "http://cless911c.mylabserver.com/hello-back", true);
+  xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+  var json = {};
+  json['name'] = document.getElementById("name").value;
+  json['lang'] = document.getElementById("lang").value;
+  xhttp.send(JSON.stringify(json));
+}
+</script>
+
+</body>
+</html>
