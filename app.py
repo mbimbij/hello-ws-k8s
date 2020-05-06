@@ -23,7 +23,7 @@ def hello():
   else:
     hello="hello"
     
-  return hello+" "+input['name']+" :: "+app_id;
+  return hello+"-v2 "+input['name']+" :: "+app_id;
 
 
 app.run(debug=True)
