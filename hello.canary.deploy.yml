@@ -2,22 +2,22 @@ apiVersion: v1
 kind: Namespace
 metadata:
   creationTimestamp: null
-  name: hello-ws
+  name: hello-ws-canary
 ---
 ---
 apiVersion: v1
 kind: Service
 metadata:
   creationTimestamp: null
-  name: hello-ws
-  namespace: hello-ws
+  name: hello-ws-canary
+  namespace: hello-ws-canary
 spec:
   ports:
   - port: 80
     protocol: TCP
     targetPort: 80
   selector:
-    app: hello-ws
+    app: hello-ws-canary
 status:
   loadBalancer: {}
 ---
@@ -27,24 +27,24 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: hello-ws
-  name: hello-ws
-  namespace: hello-ws
+    app: hello-ws-canary
+  name: hello-ws-canary
+  namespace: hello-ws-canary
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hello-ws
+      app: hello-ws-canary
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: hello-ws
+        app: hello-ws-canary
     spec:
       containers:
-      - image: cless91/hello-ws
-        name: hello-ws
+      - image: cless91/hello-ws:v2
+        name: hello-ws-canary
         env:
         - name: FLASK_RUN_HOST
           value: "0.0.0.0"
@@ -55,17 +55,19 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: hello-ingress
-  namespace: hello-ws
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "80"
+  name: hello-ingress-canary
+  namespace: hello-ws-canary
 spec:
   rules:
   - host: localhost
     http:
       paths:
       - backend:
-          serviceName: hello-ws
+          serviceName: hello-ws-canary
           servicePort: 80
         path: /hello
         pathType: ImplementationSpecific
